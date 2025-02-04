@@ -1,0 +1,30 @@
+name: Daily Commit
+
+on:
+  schedule:
+    - cron: '59 23 * * *'  # Runs daily at 11:59 PM UTC
+  workflow_dispatch:  # Allows manual triggering
+
+permissions:
+  contents: write  # Grants write access to push commits
+
+jobs:
+  commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}  # Uses built-in GitHub token
+
+      - name: Set up Git
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "21f3001689@ds.study.iitm.ac.in"
+
+      - name: Make a Commit (21f3001689@ds.study.iitm.ac.in)
+        run: |
+          echo "Automated commit on $(date)" >> daily_update.txt
+          git add -A
+          git commit -m "Daily automated commit on $(date) [skip ci]" || echo "No changes to commit"
+          git push origin main
